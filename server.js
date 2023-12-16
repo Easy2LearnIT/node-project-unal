@@ -1,5 +1,6 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { readFile, writeFile } from "node:fs/promises"; 
 
 const server = express();
 
@@ -14,17 +15,15 @@ server.get("/", async (req, res) => {
 
 server.get("/users", async (req, res) => {
     try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const data = await response.json();
-        res.status(200).emd(JSON.stringify(data));
+        const data = await readFile("./data/users.json", { encoding: "utf8"});
+        const users = JSON.parse(data);
+        res.json(users);
     } catch (error) {
-        throw Error('Something went wrong!');
+        res.json({ error: "Something went wrong!"});
     }
 });
 
-
-
-server.get("/users/:id", () => {});
+server.get("/users/:id", () => {}); 
 
 server.delete("/users/:id", () => {});
 
